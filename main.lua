@@ -1,3 +1,3 @@
 -- Load all
-os.loadAPI("inventory")
+os.loadAPI("inventory.lua")
 write("All libraries loaded")
