@@ -3,7 +3,8 @@ local github_repo = "kspear/turtle-tools"
 local branch = "master"
 local manifest = {
     "main.lua",
-    "inventory.lua"
+    "inventory.lua",
+    "startup.lua"
 }
 
 function download(filename)
@@ -21,7 +22,16 @@ function download(filename)
     write("Done\n")
 end
 
-print("Installing files")
-for f=1,#manifest do
-    download(manifest[f])
+function install()
+    print("[Installing files]")
+    for f=1,#manifest do
+        download(manifest[f])
+    end
 end
+
+function main()
+    install()
+    print("[Installation Complete]")
+end
+
+main()
