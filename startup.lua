@@ -1,2 +1,2 @@
 os.loadAPI("main.lua")
-startup("Hello world")
+main.startup("Hello world")
