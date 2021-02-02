@@ -15,7 +15,7 @@ function download(filename)
     file.write(data)
     file.close()    
     response.close()
-    write("Done")
+    write("Done\n")
 end
 
 print("Installing files")
