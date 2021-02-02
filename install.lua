@@ -6,6 +6,7 @@ local dependencies = {
     {
         name="jsonlua",
         repo="rxi/json.lua",
+        branch="master",
         files={
             "json.lua"
         }
@@ -16,7 +17,6 @@ function spit(filename, data)
     local file = fs.open(filename, "w")
     file.write(data)
     file.close()    
-    response.close()
 end
 
 function slurp(filename)
@@ -32,6 +32,7 @@ function download(repo, branch, filename)
     local filename = filename
     write(filename.." ... ")
     local data = response.readAll()
+    response.close()
     if fs.exists(filename) then
         fs.delete(filename)
     end
@@ -41,26 +42,39 @@ end
 
 -- Bootstrap
 function dependency()
-    for i1=1,#dependencies do
-        local dependency = dependencies[i1]
-        print(dependency["name"])
-        local files = dependency["files"]
-        for i2=1,#dependency["files"] do
-            download(
-                dependency["repo"],
-                dependency["branch"],
-                files[i2]
-            )
+    -- check for dependency.lock file
+    if fs.exists("dependency.lock") then
+        print("dependency.lock exists")
+    else
+        -- Install self
+        for i1=1,#dependencies do
+            local dependency = dependencies[i1]
+            print(dependency["name"])
+            print(dependency["repo"])
+            print(dependency["branch"])
+            local files = dependency["files"]
+            for i2=1,#dependency["files"] do
+                download(
+                    dependency["repo"],
+                    dependency["branch"],
+                    files[i2]
+                )
+            end
         end
-    end
-end
+        -- prep for reboot
+        download(github_repo, branch, "install.lua")
+        fs.move("install.lua", "startup.lua")
 
--- Install
--- local manifest = {
---     "main.lua",
---     "inventory.lua",
---     "startup.lua"
--- }
+        -- create dependency.lock file
+        lockfile = fs.open("dependency.lock","w")
+        lockfile.flush()
+        lockfile.close()
+        print("Reboot to continue install in 5")
+        sleep(5)
+        os.reboot()
+    end
+
+end
 
 function manifest()
     print("[Downloading manifest]")
@@ -71,6 +85,14 @@ function manifest()
 end
 
 function install()
+    if fs.exists("dependency.lock") then
+        print("dependency.lock file present, continuing")
+        fs.delete("dependency.lock")
+        fs.move("startup.lua", "install.lua")
+    else
+        print("dependency.lock file not present, aborting")
+        exit()
+    end
     local manifest = manifest()
     print("[Installing files]")
     for f=1,#manifest do
@@ -79,6 +101,7 @@ function install()
 end
 
 function main()
+    -- Get dependencies and reboot; will skip after
     dependency()
     install()
     print("[Installation Complete]")
