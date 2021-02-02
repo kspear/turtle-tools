@@ -11,6 +11,9 @@ function download(filename)
     local response = http.get(url)
     print(filename.." ... ")
     local data = response.readAll()
+    if fs.exists(filename) then
+        fs.delete(filename)
+    end
     local file = fs.open(filename, "w")
     file.write(data)
     file.close()    
