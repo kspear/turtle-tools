@@ -1,5 +1,6 @@
 -- Install
 local github_repo = "kspear/turtle-tools"
+local branch = "master"
 local manifest = {
     "main.lua",
     "inventory.lua"
