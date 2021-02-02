@@ -26,10 +26,10 @@ function slurp(filename)
     return data
 end
 
-function download(repo, branch, filename, prefix="")
+function download(repo, branch, filename)
     local url = "http://raw.githubusercontent.com/"..repo.."/"..branch.."/"..filename 
     local response = http.get(url)
-    local filename = prefix..filename
+    local filename = filename
     write(filename.." ... ")
     local data = response.readAll()
     if fs.exists(filename) then
