@@ -9,7 +9,7 @@ local manifest = {
 function download(filename)
     local url = "http://raw.githubusercontent.com/"..github_repo.."/"..branch.."/"..filename 
     local response = http.get(url)
-    print(filename.." ... ")
+    write(filename.." ... ")
     local data = response.readAll()
     if fs.exists(filename) then
         fs.delete(filename)
