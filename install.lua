@@ -59,6 +59,9 @@ function get_dependencies()
     end
     -- prep for reboot
     download(github_repo, branch, "install.lua")
+    if fs.exists("startup.lua") then
+        fs.delete("startup.lua")
+    end
     fs.move("install.lua", "startup.lua")
 
     -- create dependency.lock file
