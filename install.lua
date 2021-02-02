@@ -2,17 +2,6 @@
 local github_repo = "kspear/turtle-tools"
 local branch = "master"
 
-local dependencies = {
-    {
-        name="jsonlua",
-        repo="rxi/json.lua",
-        branch="master",
-        files={
-            "json.lua"
-        }
-    }
-}
-
 function spit(filename, data)
     local file = fs.open(filename, "w")
     file.write(data)
@@ -41,42 +30,47 @@ function download(repo, branch, filename)
 end
 
 -- Bootstrap
-function dependency()
-    -- check for dependency.lock file
-    if fs.exists("dependency.lock") then
-        print("dependency.lock exists")
-    else
-        -- Install self
-        for i1=1,#dependencies do
-            local dependency = dependencies[i1]
-            print(dependency["name"])
-            print(dependency["repo"])
-            print(dependency["branch"])
-            local files = dependency["files"]
-            for i2=1,#dependency["files"] do
-                download(
-                    dependency["repo"],
-                    dependency["branch"],
-                    files[i2]
-                )
-            end
+function get_dependencies()
+    
+    local dependencies = {
+        {
+            name="jsonlua",
+            repo="rxi/json.lua",
+            branch="master",
+            files={
+                "json.lua"
+            }
+        }
+    }
+
+    for i1=1,#dependencies do
+        local dependency = dependencies[i1]
+        print(dependency["name"])
+        print(dependency["repo"])
+        print(dependency["branch"])
+        local files = dependency["files"]
+        for i2=1,#dependency["files"] do
+            download(
+                dependency["repo"],
+                dependency["branch"],
+                files[i2]
+            )
         end
-        -- prep for reboot
-        download(github_repo, branch, "install.lua")
-        fs.move("install.lua", "startup.lua")
-
-        -- create dependency.lock file
-        lockfile = fs.open("dependency.lock","w")
-        lockfile.flush()
-        lockfile.close()
-        print("Reboot to continue install in 5")
-        sleep(5)
-        os.reboot()
     end
+    -- prep for reboot
+    download(github_repo, branch, "install.lua")
+    fs.move("install.lua", "startup.lua")
 
+    -- create dependency.lock file
+    lockfile = fs.open("dependency.lock","w")
+    lockfile.flush()
+    lockfile.close()
+    print("Reboot to continue install in 2 seconds")
+    sleep(2)
+    os.reboot()
 end
 
-function manifest()
+function get_manifest()
     print("[Downloading manifest]")
     download(github_repo, branch, "manifest.json")
     json = require("json")
@@ -93,7 +87,7 @@ function install()
         print("dependency.lock file not present, aborting")
         exit()
     end
-    local manifest = manifest()
+    local manifest = get_manifest()
     print("[Installing files]")
     for f=1,#manifest do
         download(github_repo, branch, manifest[f])
@@ -102,9 +96,11 @@ end
 
 function main()
     -- Get dependencies and reboot; will skip after
-    dependency()
-    install()
-    print("[Installation Complete]")
+    if not (fs.exists("dependency.lock")) then
+        get_dependencies()
+    else
+        install()
+    end
 end
 
 main()
