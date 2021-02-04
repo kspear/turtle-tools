@@ -63,7 +63,7 @@ local script = shell.getRunningProgram()
 print("Script is "..script)
 
 local run_from_disk = "no"
-if (count_disks() == 1) && (fs.getDir(script) == "disk") then
+if (count_disks() == 1) and (fs.getDir(script) == "disk") then
     run_from_disk = "yes"
 else
     run_from_disk = "no"
