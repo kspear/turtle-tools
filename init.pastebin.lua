@@ -1,5 +1,5 @@
 -- Configuration
-local filename = "core.lua"
+local filename = "init.lua"
 local url = "http://raw.githubusercontent.com/kspear/turtle-tools/HEAD/" .. filename
 
 -- Download

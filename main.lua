@@ -1,5 +1,5 @@
 -- Load all
-os.loadAPI("inventory.lua")
+require("inventory")
 print("All libraries loaded")
 
 function startup(message)

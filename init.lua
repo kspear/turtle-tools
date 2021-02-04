@@ -33,6 +33,10 @@ function github_download_raw(repo, branch, filename)
     write("Done\n")
 end
 
+function log(message)
+    print("[" .. message .. "]")
+end
+
 -- bootstrap
 -- Detect current tt install state, with 4 possible scenarios:
 -- - First install (i.e. pastebin script pulled this file, renamed it startup.lua and rebooted)
@@ -71,3 +75,53 @@ else
 end
 
 print("Run from disk? "..run_from_disk)
+
+local repo = {
+    name = "kspear/turtle-tools",
+    ref = "HEAD"
+}
+
+function get_manifest()
+    log("Downloading manifest")
+    github_download_raw(repo["name"], repo["ref"], "manifest.json")
+    local raw = slurp("manifest.json")
+    return textutils.unserializeJSON(raw)
+end
+
+function install(path, force)
+    local path = path or ""
+    local force = force or false
+
+    local install_path = path .. "/tt"
+    
+    if fs.isDir(install_path) then
+        log("Install path (".. install_path ..") already exists.")
+        if force == true then
+            log("Overwriting")
+            fs.delete(install_path)
+        else
+            log("force not set, aborting installation")
+            exit()
+        end
+    end
+
+    fs.makeDir(install_path)
+    log("Installing to ".. install_path)
+
+    fs.setDir(install_path)
+
+    for f=1,#manifest do
+        local filename = manifest[f]
+        local file_path = install_path .. "/" .. filename
+        github_download_raw(repo["name"], repo["ref"], filename)
+    end
+
+    -- Install startup
+    if fs.exists(path.."/".."startup.lua") then
+        fs.delete(path.."/".."startup.lua")
+    end
+
+    fs.copy(install_path.."/".."startup.lua", path.."/".."startup.lua")
+
+    log("Installation to "..install_path.." finished.")
+end
