@@ -46,7 +46,8 @@ end
 
 local run_from_disk = "no"
 
-if fs.getDir(shell.getRunningProgram()) ~= "hdd" then
+local script = shell.getRunningProgram()
+if fs.getDir(script) ~= "hdd" then
     run_from_disk = "yes"
 end
 
