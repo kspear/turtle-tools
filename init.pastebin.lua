@@ -10,7 +10,7 @@ end
 local response = http.get(url)
 local data = response.readAll()
 response.close()
-local file = fs.open(filename, mode)
+local file = fs.open(filename, "w")
 file.write(data)
 file.close()
 shell.run(filename)
