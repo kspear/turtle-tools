@@ -46,6 +46,7 @@ end
 
 
 function count_disks()
+    local sides = {"top", "bottom", "left", "right", "front", "back"}
     local total = 0
 
     for i=1,#sides do
