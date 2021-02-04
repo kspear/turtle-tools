@@ -44,7 +44,7 @@ end
 -- If a disk is present, the user should be prompted to select where to install (disk, system or both)
 -- If started from a disk, and already installed on that disk, but not on the host, prompt to copy (install)
 
-run_from_disk = (
+local run_from_disk = (
     local script_file = shell.getRunningProgram()
     local drive = fs.getDir(script_file)
     drive ~= "hdd"
