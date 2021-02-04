@@ -1,6 +1,6 @@
 -- Configuration
 local filename = "core.lua"
-local url = "http://raw.githubusercontent.com/kspear/turtle-tools/master/" .. filename
+local url = "http://raw.githubusercontent.com/kspear/turtle-tools/HEAD/" .. filename
 
 -- Download
 if fs.exists(filename) then
