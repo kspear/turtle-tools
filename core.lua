@@ -44,12 +44,29 @@ end
 -- If a disk is present, the user should be prompted to select where to install (disk, system or both)
 -- If started from a disk, and already installed on that disk, but not on the host, prompt to copy (install)
 
-local run_from_disk = "no"
+
+function count_disks()
+    local total = 0
+
+    for i=1,#sides do
+        local side = sides[i]
+        if disk.isPresent(side) and disk.hasData(side) then
+            total = total + 1
+        end
+    end
+
+    return total
+end
+
 
 local script = shell.getRunningProgram()
 print("Script is "..script)
-if fs.getDir(script) ~= "hdd" then
+
+local run_from_disk = "no"
+if (count_disks() == 1) && (fs.getDir(script) == "disk") then
     run_from_disk = "yes"
+else
+    run_from_disk = "no"
 end
 
 print("Run from disk? "..run_from_disk)
