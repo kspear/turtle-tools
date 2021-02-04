@@ -48,7 +48,7 @@ end
 --     local script_file = shell.getRunningProgram()
 --     local drive = 
 --     drive ~= "hdd"
-)
+-- )
 
 local run_from_disk = "no"
 
