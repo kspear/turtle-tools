@@ -97,7 +97,7 @@ function install(path, force)
     fs.makeDir(install_path)
     log("Installing to ".. install_path)
 
-    fs.setDir(install_path)
+    shell.setDir(install_path)
 
     for f=1,#manifest do
         local filename = manifest[f]
