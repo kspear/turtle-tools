@@ -37,44 +37,33 @@ function log(message)
     print("[" .. message .. "]")
 end
 
--- bootstrap
--- Detect current tt install state, with 4 possible scenarios:
--- - First install (i.e. pastebin script pulled this file, renamed it startup.lua and rebooted)
--- - First install reboot (i.e. this script ran once to do first part of installation, so second part of installation required)
--- - Post-install reboot (i.e. after installation, any subsequent reboot)
--- - Post-install update
 
--- Also important to account for: this program may be installed to a system with a disk
--- If a disk is present, the user should be prompted to select where to install (disk, system or both)
--- If started from a disk, and already installed on that disk, but not on the host, prompt to copy (install)
+-- function count_disks()
+--     local sides = {"top", "bottom", "left", "right", "front", "back"}
+--     local total = 0
 
+--     for i=1,#sides do
+--         local side = sides[i]
+--         if disk.isPresent(side) and disk.hasData(side) then
+--             total = total + 1
+--         end
+--     end
 
-function count_disks()
-    local sides = {"top", "bottom", "left", "right", "front", "back"}
-    local total = 0
-
-    for i=1,#sides do
-        local side = sides[i]
-        if disk.isPresent(side) and disk.hasData(side) then
-            total = total + 1
-        end
-    end
-
-    return total
-end
+--     return total
+-- end
 
 
-local script = shell.getRunningProgram()
-print("Script is "..script)
+-- local script = shell.getRunningProgram()
+-- print("Script is "..script)
 
-local run_from_disk = "no"
-if (count_disks() == 1) and (fs.getDir(script) == "disk") then
-    run_from_disk = "yes"
-else
-    run_from_disk = "no"
-end
+-- local run_from_disk = "no"
+-- if (count_disks() == 1) and (fs.getDir(script) == "disk") then
+--     run_from_disk = "yes"
+-- else
+--     run_from_disk = "no"
+-- end
 
-print("Run from disk? "..run_from_disk)
+-- print("Run from disk? "..run_from_disk)
 
 local repo = {
     name = "kspear/turtle-tools",
@@ -117,11 +106,25 @@ function install(path, force)
     end
 
     -- Install startup
-    if fs.exists(path.."/".."startup.lua") then
-        fs.delete(path.."/".."startup.lua")
+    if fs.exists(path.."/startup.lua") then
+        fs.delete(path.."/startup.lua")
     end
 
-    fs.copy(install_path.."/".."startup.lua", path.."/".."startup.lua")
+    fs.copy(install_path.."/startup.lua", path.."/startup.lua")
+    fs.delete(path.."/install.lua")
 
     log("Installation to "..install_path.." finished.")
+    os.reboot()
 end
+
+function init()
+    -- path = fs.getDir(shell.getRunningProgram())
+    if not fs.isDir("/tt") then
+        install("", true)
+    else
+        require("main")
+        main.startup("it works!")
+    end
+end
+
+init()
