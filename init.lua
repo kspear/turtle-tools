@@ -122,6 +122,7 @@ function init()
     if not fs.isDir("/tt") then
         install("", true)
     else
+        shell.setDir("/tt")
         require("main")
         main.startup("it works!")
     end
