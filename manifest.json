@@ -1,5 +1,5 @@
 [
-    "inventory.lua",
+    "lib/inventory.lua",
     "main.lua",
     "startup.lua"
 ]

@@ -118,12 +118,10 @@ function install(path, force)
 end
 
 function init()
-    -- path = fs.getDir(shell.getRunningProgram())
     if not fs.isDir("/tt") then
         install("", true)
     else
-        shell.setDir("/tt")
-        require("main")
+        require("tt/main")
         main.startup("it works!")
     end
 end

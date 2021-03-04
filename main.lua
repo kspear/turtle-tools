@@ -1,5 +1,5 @@
 -- Load all
-require("inventory")
+require("lib/inventory")
 print("All libraries loaded")
 
 function startup(message)
