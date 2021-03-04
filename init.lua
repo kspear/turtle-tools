@@ -80,6 +80,7 @@ end
 function install(path, force)
     local path = path or ""
     local force = force or false
+    local manifest = get_manifest()
 
     local install_path = path .. "/tt"
     
