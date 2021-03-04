@@ -31,6 +31,7 @@ function github_download_raw(repo, branch, filename)
     end
     spit(filename, data)
     write("Done\n")
+    return true
 end
 
 function log(message)
