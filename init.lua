@@ -82,6 +82,9 @@ function install(path, force)
     local path = path or ""
     local force = force or false
     local manifest = get_manifest()
+    while not fs.exists("manifest.json") do
+        os.sleep(0.1)
+    end
 
     local install_path = path .. "/tt"
     
